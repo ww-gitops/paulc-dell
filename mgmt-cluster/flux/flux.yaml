@@ -39,7 +39,7 @@ spec:
   dependsOn:
   - name: flux-components
   interval: 10m0s
-  path: ./mgmt-cluster/addons/nginx
+  path: ./mgmt-cluster/addons/nginx-kind
   prune: true
   wait: true
   sourceRef:
