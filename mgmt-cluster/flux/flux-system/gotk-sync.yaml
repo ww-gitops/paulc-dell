@@ -5,7 +5,7 @@ metadata:
   name: global-config
   namespace: flux-system
 spec:
-  interval: 1m0s
+  interval: 10m0s
   ref:
     branch: main
   url: https://github.com/ww-gitops/global-config
@@ -29,7 +29,7 @@ metadata:
   name: flux-system
   namespace: flux-system
 spec:
-  interval: 1m0s
+  interval: 10m0s
   ref:
     branch: main
   secretRef:
@@ -42,7 +42,7 @@ metadata:
   name: flux-system
   namespace: flux-system
 spec:
-  interval: 1m0s
+  interval: 10m0s
   path: ././mgmt-cluster/flux
   prune: true
   sourceRef:
