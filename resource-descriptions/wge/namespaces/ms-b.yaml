@@ -1,0 +1,3 @@
+apps:
+  - name: podinfo-ms1b
+  - name: podinfo-ms2b

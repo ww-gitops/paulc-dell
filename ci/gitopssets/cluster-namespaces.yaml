@@ -1,0 +1,47 @@
+apiVersion: templates.weave.works/v1alpha1
+kind: GitOpsSet
+metadata:
+  name: namespaces
+  namespace: wge
+spec:
+  generators:
+    - gitRepository:
+        repositoryRef: clusters
+        files:
+          - path: resource-descriptions/wge/clusters/clusterName.yaml
+  templates:
+    - repeat: '{ .namespaces }'
+      content:
+        apiVersion: source.toolkit.fluxcd.io/v1beta2
+        kind: OCIRepository
+        metadata:
+          name: "ns-{{ .Repeat.name }}"
+          namespace: wge
+          labels:
+            sharding.fluxcd.io/key: "shard{{ add1 (mod .RepeatIndex 5) }}"
+        spec:
+          interval: 10m
+          url: "oci://${awsAccountId}.dkr.ecr.${awsRegion}.amazonaws.com/ns-{{ .Repeat.name }}"
+
+    - repeat: '{ .namespaces }'
+      content:
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: "ns-{{ .Repeat.name }}"
+          namespace: wge
+          labels:
+            sharding.fluxcd.io/key: "shard{{ add1 (mod .RepeatIndex 5) }}"
+        spec:
+          interval: 10m
+          prune: true
+          wait: true
+          timeout: 5m
+          sourceRef:
+            kind: OCIRepository
+            name: "ns-{{ .Repeat.name }}"
+          path: ./manifests
+          postBuild:
+            substituteFrom:
+              - kind: ConfigMap
+                name: cluster-config

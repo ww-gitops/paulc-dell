@@ -1,0 +1,66 @@
+apiVersion: templates.weave.works/v1alpha1
+kind: GitOpsSet
+metadata:
+  name: apps
+  namespace: wge
+spec:
+  serviceAccountName: gitopssets
+  generators:
+    - gitRepository:
+        repositoryRef: clusters
+        files:
+          - path: resource-descriptions/wge/clusters/clusterName.yaml
+  templates:
+    - repeat: '{ .namespaces }'
+      content:
+        apiVersion: templates.weave.works/v1alpha1
+        kind: GitOpsSet
+        metadata:
+          annotations:
+            templates.weave.works/delimiters: "((,))"
+          name: ns-{{ .Repeat.name }}-apps
+          namespace: wge
+        spec:
+          generators:
+            - gitRepository:
+                repositoryRef: clusters
+                files:
+                  - path: resource-descriptions/wge/namespaces/{{ .Repeat.name }}.yaml
+          templates:
+            - repeat: '{ .apps }'
+              content:
+                apiVersion: source.toolkit.fluxcd.io/v1beta2
+                kind: OCIRepository
+                metadata:
+                  name: "ns-{{ .Repeat.name }}-app-(( .Repeat.name ))"
+                  namespace: wge
+                  labels:
+                    sharding.fluxcd.io/key: "shard(( add1 (mod .RepeatIndex 5) ))"
+                spec:
+                  interval: 10m
+                  url: "oci://${awsAccountId}.dkr.ecr.${awsRegion}.amazonaws.com/ns-{{ .Repeat.name }}-app-(( .Repeat.name ))"
+
+            - repeat: '{ .apps }'
+              content:
+                apiVersion: kustomize.toolkit.fluxcd.io/v1
+                kind: Kustomization
+                metadata:
+                  name: "ns-{{ .Repeat.name }}-app-(( .Repeat.name ))"
+                  namespace: wge
+                  labels:
+                    sharding.fluxcd.io/key: "shard(( add1 (mod .RepeatIndex 5) ))"
+                spec:
+                  dependsOn:
+                    - name: "layer(( mod .RepeatIndex  10 ))"
+                  interval: 10m
+                  prune: true
+                  wait: true
+                  timeout: 5m
+                  sourceRef:
+                    kind: OCIRepository
+                    name: "ns-{{ .Repeat.name }}-app-(( .Repeat.name ))"
+                  path: ./manifests
+                  postBuild:
+                    substituteFrom:
+                      - kind: ConfigMap
+                        name: cluster-config
