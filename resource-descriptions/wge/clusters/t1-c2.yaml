@@ -1,3 +1,5 @@
 namespaces:
   - name: ms-a
+  - name: ms-b
+  - name: ms-c
   - name: ms-d
