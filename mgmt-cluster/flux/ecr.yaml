@@ -1,0 +1,25 @@
+kind: Kustomization
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+metadata:
+  name: ecr-repos
+  namespace: flux-system
+  annotations:
+    templates.weave.works/create-request: ''
+spec:
+  interval: 10m0s
+  dependsOn:
+    - name: aws
+  sourceRef:
+    kind: GitRepository
+    name: global-config
+  path: ./mgmt-cluster/apps/templates/generators/onboarding
+  prune: true
+  wait: true
+  timeout: 5m
+  postBuild:
+    substitute:
+      resourceName: test
+      templateNamespace: kind
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-config
