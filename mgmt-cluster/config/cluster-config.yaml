@@ -15,7 +15,7 @@ data:
   globalGitHubOrg: ww-gitops
   globalGitHubRepo: global-config
   globalGitHubBranch: main
-  awsAccountId: ""
+  awsAccountId: "749339757188"
   prefixName: ww-pc-dell
   awsRegion: eu-west-1
   awsTagCreator: paul.carlton@weave.works
