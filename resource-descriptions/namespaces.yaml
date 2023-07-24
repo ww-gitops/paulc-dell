@@ -2,4 +2,4 @@ namespaces:
   - name: test-one
   - name: test-two
   - name: kind
-
+  - name: flux-apps
