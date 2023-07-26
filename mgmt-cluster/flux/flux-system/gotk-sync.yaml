@@ -1,3 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: clusters
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  ref:
+    branch: main
+  url: https://github.com/ww-gitops/clusters
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
