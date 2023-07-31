@@ -35,5 +35,5 @@ spec:
       awsRegion: eu-west-1
       awsTagCreator: paul.carlton@weave.works
       awsTagCustomer: weaveworks-cx
-      awsTagProjectGid: 99999
+      awsTagProjectGid: "99999"
       
