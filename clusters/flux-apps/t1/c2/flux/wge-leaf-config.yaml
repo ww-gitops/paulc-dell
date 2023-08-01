@@ -31,9 +31,9 @@ spec:
       globalGitHubOrg: ww-gitops
       globalGitHubRepo: global-config
       globalGitHubBranch: main
-      awsAccountId: format("\"%s\"", var.awsAccountId)
+      awsAccountId: "749339757188"
       awsRegion: eu-west-1
       awsTagCreator: paul.carlton@weave.works
       awsTagCustomer: weaveworks-cx
-      awsTagProjectGid: format("\"%s\"", var.awsTagProjectGid)
+      awsTagProjectGid: "99999"
       
