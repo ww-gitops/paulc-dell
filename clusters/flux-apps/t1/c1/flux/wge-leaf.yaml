@@ -15,7 +15,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: global-config
-    namespace: flux-system
+    namespace: flux-apps
   path: ./leaf-clusters/wge-leaf
   prune: true
   timeout: 5m
