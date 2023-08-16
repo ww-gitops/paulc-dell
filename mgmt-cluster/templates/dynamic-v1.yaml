@@ -267,8 +267,6 @@ spec:
                       templates.weave.works/create-request: ''
                   spec:
                     interval: 10m0s
-                    dependsOn:
-                      - name: '(( .params.RESOURCE_NAME ))-s3-image-versions-{{ .Repeat.name }}'
                     sourceRef:
                       kind: GitRepository
                       name: global-config
