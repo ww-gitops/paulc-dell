@@ -233,8 +233,6 @@ spec:
           templates.weave.works/create-request: ""
         name: t1-s3-image-versions-{{ .Repeat.name }}
       spec:
-        dependsOn:
-        - name: t1-s3-image-versions-{{ .Repeat.name }}
         interval: 10m0s
         path: ./infra/dynamic/s3-create
         postBuild:
