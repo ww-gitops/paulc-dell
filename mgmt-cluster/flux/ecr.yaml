@@ -7,8 +7,6 @@ metadata:
     templates.weave.works/create-request: ''
 spec:
   interval: 10m0s
-  dependsOn:
-    - name: aws
   sourceRef:
     kind: GitRepository
     name: global-config
