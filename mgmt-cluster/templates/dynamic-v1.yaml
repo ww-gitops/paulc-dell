@@ -237,6 +237,56 @@ spec:
                         resourceName: '(( .params.RESOURCE_NAME ))'
                         clusterName: '{{ .Repeat.name }}'
 
+        # Create s3 bucket 
+        - apiVersion: templates.weave.works/v1alpha1
+          kind: GitOpsSet
+          metadata:
+            labels:
+              app.kubernetes.io/name: gitopsset
+              app.kubernetes.io/instance: gitopsset-sample
+              app.kubernetes.io/part-of: gitopssets-controller
+              app.kubernetes.io/managed-by: kustomize
+              app.kubernetes.io/created-by: gitopssets-controller
+            name: (( .params.RESOURCE_NAME ))-cluster-image-versions
+            namespace: (( .template.meta.namespace ))
+          spec:
+            serviceAccountName: gitopssets
+            generators:
+              - gitRepository:
+                  repositoryRef: flux-system
+                  files:
+                    - path: resource-descriptions/(( .template.meta.namespace ))/(( .params.RESOURCE_NAME )).yaml
+            templates:
+              - repeat: '{ .clusters[?(@.mode=="create")] }'
+                content:
+                  kind: Kustomization
+                  apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+                  metadata:
+                    name: '(( .params.RESOURCE_NAME ))-s3-image-versions-{{ .Repeat.name }}'
+                    annotations:
+                      templates.weave.works/create-request: ''
+                  spec:
+                    interval: 10m0s
+                    dependsOn:
+                      - name: '(( .params.RESOURCE_NAME ))-s3-image-versions-{{ .Repeat.name }}'
+                    sourceRef:
+                      kind: GitRepository
+                      name: global-config
+                      namespace: flux-system
+                    path: ./infra/dynamic/s3-create
+                    prune: true
+                    wait: true
+                    timeout: 5m
+                    
+                    postBuild:
+                      substituteFrom:
+                        - kind: ConfigMap
+                          name: cluster-config
+                      substitute:
+                        resourceName: '(( .params.RESOURCE_NAME ))'
+                        bucketName: '{{ .Repeat.name }}'
+                        templateNamespace: '(( .template.meta.namespace ))'
+
         # Configure eks cluster if create is true
         - apiVersion: templates.weave.works/v1alpha1
           kind: GitOpsSet
