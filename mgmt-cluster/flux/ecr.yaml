@@ -9,8 +9,8 @@ spec:
   interval: 10m0s
   sourceRef:
     kind: GitRepository
-    name: global-config
-  path: ./mgmt-cluster/apps/templates/generators/onboarding
+    name: clusters
+  path: ./onboarding
   prune: true
   wait: true
   timeout: 5m
