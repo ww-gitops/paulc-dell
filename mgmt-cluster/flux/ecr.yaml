@@ -11,6 +11,8 @@ spec:
     kind: GitRepository
     name: clusters
   path: ./onboarding
+  dependsOn:
+    - name: aws
   prune: true
   wait: true
   timeout: 5m
