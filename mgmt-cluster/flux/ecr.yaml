@@ -14,7 +14,9 @@ spec:
   dependsOn:
     - name: aws
     - name: t1-eks-config-c1
+      namespace: flux-apps
     - name: t1-eks-config-c2
+      namespace: flux-apps
   prune: true
   wait: true
   timeout: 5m
