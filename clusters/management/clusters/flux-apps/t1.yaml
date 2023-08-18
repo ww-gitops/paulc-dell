@@ -215,55 +215,6 @@ metadata:
     app.kubernetes.io/part-of: gitopssets-controller
     templates.weave.works/template-name: dynamic-v1
     templates.weave.works/template-namespace: ""
-  name: t1-cluster-image-versions
-  namespace: flux-apps
-spec:
-  generators:
-  - gitRepository:
-      files:
-      - path: resource-descriptions/flux-apps/t1.yaml
-      repositoryRef: flux-system
-  serviceAccountName: gitopssets
-  templates:
-  - content:
-      apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-      kind: Kustomization
-      metadata:
-        annotations:
-          templates.weave.works/create-request: ""
-        name: t1-s3-image-versions-{{ .Repeat.name }}
-      spec:
-        interval: 10m0s
-        path: ./infra/dynamic/s3-create
-        postBuild:
-          substitute:
-            bucketName: '{{ .Repeat.name }}'
-            resourceName: t1
-            templateNamespace: flux-apps
-          substituteFrom:
-          - kind: ConfigMap
-            name: cluster-config
-        prune: true
-        sourceRef:
-          kind: GitRepository
-          name: global-config
-          namespace: flux-system
-        timeout: 5m
-        wait: true
-    repeat: '{ .clusters[?(@.mode=="create")] }'
-
----
-apiVersion: templates.weave.works/v1alpha1
-kind: GitOpsSet
-metadata:
-  labels:
-    app.kubernetes.io/created-by: gitopssets-controller
-    app.kubernetes.io/instance: gitopsset-sample
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: gitopsset
-    app.kubernetes.io/part-of: gitopssets-controller
-    templates.weave.works/template-name: dynamic-v1
-    templates.weave.works/template-namespace: ""
   name: t1-eks-config
   namespace: flux-apps
 spec:
