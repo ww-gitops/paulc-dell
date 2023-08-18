@@ -16,8 +16,8 @@ spec:
   timeout: 5m
   postBuild:
     substitute:
-      resourceName: test
-      templateNamespace: kind
+      resourceName: t1
+      templateNamespace: flux-apps
     substituteFrom:
       - kind: ConfigMap
         name: cluster-config
