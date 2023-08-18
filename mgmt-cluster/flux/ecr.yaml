@@ -13,6 +13,8 @@ spec:
   path: ./onboarding
   dependsOn:
     - name: aws
+    - name: t1-eks-config-c1
+    - name: t1-eks-config-c2
   prune: true
   wait: true
   timeout: 5m
