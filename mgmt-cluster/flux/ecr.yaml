@@ -13,9 +13,9 @@ spec:
   path: ./onboarding
   dependsOn:
     - name: aws
-    - name: t1-eks-config-c1
+    - name: t1-eks-config-dev-eu-cset1-c1
       namespace: flux-apps
-    - name: t1-eks-config-c2
+    - name: t1-eks-config-dev-eu-cset1-c2
       namespace: flux-apps
   prune: true
   wait: true
