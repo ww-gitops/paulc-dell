@@ -16,14 +16,14 @@ vpcs:
 
 clusters:
     
-  - name: c1
+  - name: dev-eu-cset1-c1
     mode: create
     gui: true
     flux: true
     vpc_name: v1
     version: 1.26
 
-  - name: c2
+  - name: dev-eu-cset1-c2
     mode: create
     gui: true
     flux: true
