@@ -36,7 +36,7 @@ spec:
       awsTagCreator: paul.carlton@weave.works
       awsTagCustomer: weaveworks-cx
       awsTagProjectGid: '"99999"'
-      cset: 
-      region: 
-      env: 
+      cset: cset2
+      region: eu
+      env: dev
       
