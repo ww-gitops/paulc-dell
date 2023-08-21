@@ -294,6 +294,9 @@ spec:
           substitute:
             clusterName: '{{ .Repeat.name }}'
             clusterPrefix: '{{ getordefault .Repeat "eks_resource" "t1" }}-'
+            cset: '{{ getordefault .Repeat "cset" "cset1" }}'
+            env: '{{ getordefault .Repeat "env" "dev" }}'
+            region: '{{ getordefault .Repeat "region" "eu" }}'
             resourceName: t1
             target_path: clusters/flux-apps/t1/
             templateNamespace: flux-apps
