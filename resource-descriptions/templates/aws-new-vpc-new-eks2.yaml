@@ -47,7 +47,7 @@ clusters:
     version: 1.27
     region: us
 
-  - name: staging-eu-cset1-c1
+  - name: stage-eu-cset1-c1
     mode: create
     gui: true
     flux: true
