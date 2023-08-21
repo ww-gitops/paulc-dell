@@ -334,8 +334,7 @@ spec:
                     path: ./infra/dynamic/leaf-apply
                     prune: true
                     wait: true
-                    timeout: 5m
-                    
+                    timeout: 5m      
                     postBuild:
                       substituteFrom:
                         - kind: ConfigMap
@@ -346,6 +345,9 @@ spec:
                         templateNamespace: '(( .template.meta.namespace ))'
                         target_path: 'clusters/(( .template.meta.namespace ))/(( .params.RESOURCE_NAME ))/${clusterName}'
                         clusterPrefix: '{{ getordefault .Repeat "eks_resource" "(( .params.RESOURCE_NAME ))" }}-'
+                        cset: '{{ getordefault .Repeat "cset" "cset1" }}'
+                        region: '{{ getordefault .Repeat "region" "eu" }}'
+                        env: '{{ getordefault .Repeat "env" "dev" }}'
 
         # Apply kubeconfig used by GUI to management cluster
         - apiVersion: templates.weave.works/v1alpha1

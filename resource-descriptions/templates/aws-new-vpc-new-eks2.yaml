@@ -29,3 +29,28 @@ clusters:
     flux: true
     vpc_name: v1
     version: 1.26
+    cset: cset2
+
+  - name: dev-eu-cset2-c1
+    mode: create
+    gui: true
+    flux: true
+    vpc_name: v1
+    version: 1.26
+    cset: cset2
+
+  - name: dev-us-cset1-c1
+    mode: create
+    gui: true
+    flux: true
+    vpc_name: v1
+    version: 1.26
+    region: us
+
+  - name: staging-eu-cset1-c1
+    mode: create
+    gui: true
+    flux: true
+    vpc_name: v1
+    version: 1.26
+    env: staging
