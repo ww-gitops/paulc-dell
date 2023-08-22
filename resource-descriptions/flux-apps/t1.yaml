@@ -1,0 +1,56 @@
+wge:
+  gui: false
+
+template: 
+  name: dynamic-v1
+  namespace: flux-apps
+aws:
+  region: eu-west-1
+
+vpcs:
+  - name: v1
+    mode: create
+    cidr: 10.0.0.0/16
+    publicsubnets: 3
+    privatesubnets: 3
+
+clusters:
+    
+  - name: dev-eu-cset1-c1
+    mode: create
+    gui: true
+    flux: true
+    vpc_name: v1
+    version: 1.27
+
+  - name: dev-eu-cset1-c2
+    mode: create
+    gui: true
+    flux: true
+    vpc_name: v1
+    version: 1.27
+    cset: cset2
+
+  - name: dev-eu-cset2-c1
+    mode: create
+    gui: true
+    flux: true
+    vpc_name: v1
+    version: 1.27
+    cset: cset2
+
+  - name: dev-us-cset1-c1
+    mode: create
+    gui: true
+    flux: true
+    vpc_name: v1
+    version: 1.27
+    region: us
+
+  - name: stage-eu-cset1-c1
+    mode: create
+    gui: true
+    flux: true
+    vpc_name: v1
+    version: 1.27
+    env: stage
