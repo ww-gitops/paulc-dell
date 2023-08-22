@@ -1,0 +1,26 @@
+#
+# DO NOT EDIT - This file is managed by Terraform
+#
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: wge-leaf-apps
+  namespace: flux-apps
+spec:
+  dependsOn:
+    - name: wge-leaf
+  interval: 10m0s
+  retryInterval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: global-config
+    namespace: flux-apps
+  path: ./leaf-clusters/wge-leaf-apps
+  prune: true
+  timeout: 5m
+  wait: true
+  postBuild:
+    substituteFrom:
+    - kind: ConfigMap
+      name: cluster-config
