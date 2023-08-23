@@ -10,7 +10,7 @@ patches:
       metadata:
         name: source-controller
         annotations:
-          eks.amazonaws.com/role-arn: arn:aws:iam::749339757188:role/t1-dev-eu-cset2-c1-s3-image-version-read      
+          eks.amazonaws.com/role-arn: arn:aws:iam::749339757188:role/t1-dev-eu-cset2-c1-s3-bootstrap-read      
     target:
       kind: ServiceAccount
       name: source-controller
