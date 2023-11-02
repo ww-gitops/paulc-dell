@@ -299,7 +299,7 @@ spec:
     name: global-config
   postBuild:
     substitute:
-      suspendNamespaceGitopsSet: "false"
+      suspendNamespaceGitopsSet: ""
     substituteFrom:
       - kind: ConfigMap
         name: cluster-config
