@@ -334,7 +334,7 @@ spec:
                     path: ./infra/dynamic/leaf-apply
                     prune: true
                     wait: true
-                    timeout: 5m      
+                    timeout: 5m
                     postBuild:
                       substituteFrom:
                         - kind: ConfigMap
