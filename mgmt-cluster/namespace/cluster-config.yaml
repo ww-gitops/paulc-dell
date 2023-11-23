@@ -8,14 +8,14 @@ data:
   clusterType: "macbook"
   mgmtClusterName: ww-paulc-dell
   dnsSuffix: kubernetes.dell.internal
-  clusterIP: 10.99.77.160
+  clusterIP: 10.110.195.204
   scmType: github
   GitHubOrg: ww-gitops
   GitHubRepo: paulc-dell
   globalGitHubOrg: ww-gitops
   globalGitHubRepo: global-config
   globalGitHubBranch: main
-  awsAccountId: ""
+  awsAccountId: "749339757188"
   prefixName: ww-pc-dell
   awsRegion: eu-west-1
   awsTagCreator: paul.carlton@weave.works
