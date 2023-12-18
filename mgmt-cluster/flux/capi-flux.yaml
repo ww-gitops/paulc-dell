@@ -48,7 +48,6 @@ spec:
   interval: 10m0s
   dependsOn:
     - name: wge
-    - name: capi
   path: ./clusters/management/templates
   prune: true
   wait: true
