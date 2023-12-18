@@ -1,0 +1,251 @@
+apiVersion: templates.weave.works/v1alpha2
+kind: GitOpsTemplate
+metadata:
+  name: medx-environment
+  namespace: flux-system
+  labels:
+    weave.works/template-type: terraform
+  annotations:
+    templates.weave.works/profiles-enabled: "false"
+    templates.weave.works/kustomizations-enabled: "false"
+    templates.weave.works/credentials-enabled: "false"
+    templates.weave.works/delimiters: "${{,}}"
+spec:
+  description: Template for creating new MedX environments.
+  renderType: templating
+  params:
+    - name: CLUSTER_NAME
+      description: Name of the cluster.
+    - name: DATABASE_ALLOCATED_STORAGE
+      description: database allocated storage.
+      default: "20"
+      required: false
+    - name: CLUSTER_VERSION
+      description: Version of the cluster.
+      default: "1.26"
+    - name: ENVIRONMENT
+      description: Type of environment cluster will be used for.
+      options: ["weave", "staging", "pre-prod", "demo", "prod" , "testenv-prod"]
+    - name: AWS_REGION
+      description: AWS region to deploy cluster.
+      options:
+        - ca-central-1
+        - eu-central-1
+        - eu-north-1
+        - eu-west-1
+        - eu-west-2
+        - eu-west-3
+        - sa-east-1
+        - us-east-1
+        - us-east-2
+        - us-west-1
+        - us-west-2
+        - ap-southeast-4
+    - name: VPC_CIDR
+      description: IPv4 cidr range for VPC.
+      default: 10.0.0.0/16
+    - name: PUBLIC_SUBNET_COUNT
+      description: Number of public subnets to create.
+      default: "3"
+    - name: PRIVATE_SUBNET_COUNT
+      description: Number of private subnets to create.
+      default: "3"
+    - name: DESIRED_SIZE
+      description: Desired number of nodes in cluster.
+      default: "2"
+    - name: MIN_SIZE
+      description: Min number of nodes in cluster.
+      default: "2"
+    - name: MAX_SIZE
+      description: Max number of nodes in cluster.
+      default: "6"
+    - name: INSTANCE_TYPE
+      description: Instance type of nodes in cluster.
+      default: "t3.medium"
+    - name: ROUTE53_DOMAIN
+      description: Root Route 53 domain for cluster DNS routing
+    - name: CREATE_ROUTE53_SUB_DOMAIN
+      description: Create Route 53 sub domain under root domain
+      options: ["true", "false"]
+      default: "false"
+    - name: ROUTE53_SUB_DOMAIN
+      description: Optional - Sub Route 53 domain for cluster DNS routing (defaults to cluster name)
+      required: false
+    - name: CREATE_DATABASE_FROM_SNAPSHOT
+      description: Optional - Name of RDS snapshot to create database from
+      required: false
+    - name: DATABASE_VERSION
+      description: RDS Postgres version
+      default: "11.16"
+    - name: DATABASE_SECRET_NAME
+      description: Name of AWS Secrets Manager's secret containing database credentials
+    - name: SMTP_SECRET_NAME
+      description: Name of AWS Secrets Manager's secret containing smtp credentials
+      required: false
+  resourcetemplates:
+    - path: clusters/management/clusters/${{ .params.CLUSTER_NAME }}.yaml
+      content:
+        - apiVersion: gitops.weave.works/v1alpha1
+          kind: GitopsCluster
+          metadata:
+            name: ${{ .params.CLUSTER_NAME }}
+            namespace: flux-system
+          spec:
+            secretRef:
+              name: ${{ .params.CLUSTER_NAME }}-kubeconfig
+        - apiVersion: infra.contrib.fluxcd.io/v1alpha1
+          kind: Terraform
+          metadata:
+            name: ${{ .params.CLUSTER_NAME }}-core
+            namespace: flux-system
+          spec:
+            interval: 1h
+            retryInterval: 20s
+            path: ./terraform/cluster-core
+            approvePlan: auto
+            enableInventory: true
+            destroyResourcesOnDeletion: true
+            storeReadablePlan: human
+            backendConfig:
+              customConfiguration: |
+                backend "s3" {
+                  bucket         = "medx-terraform-state"
+                  key            = "clusters/${{ .params.CLUSTER_NAME }}/cluster-core/terraform.tfstate"
+                  region         = "ca-central-1"
+                  encrypt        = true
+                  dynamodb_table = "medx-tfstate-lock"
+                }
+            writeOutputsToSecret:
+              name: ${{ .params.CLUSTER_NAME }}-core-outputs
+            vars:
+              - name: cluster_name
+                value: ${{ .params.CLUSTER_NAME }}
+              - name: cluster_version
+                value: ${{ .params.CLUSTER_VERSION }}
+              - name: region
+                value: ${{ .params.AWS_REGION }}
+              - name: vpc_cidr
+                value: ${{ .params.VPC_CIDR }}
+              - name: public_subnet_count
+                value: ${{ .params.PUBLIC_SUBNET_COUNT }}
+              - name: private_subnet_count
+                value: ${{ .params.PRIVATE_SUBNET_COUNT }}
+              - name: route53_domain
+                value: ${{ .params.ROUTE53_DOMAIN }}
+              - name: create_route53_sub_domain
+                value: ${{ .params.CREATE_ROUTE53_SUB_DOMAIN }}
+              - name: route53_sub_domain
+                value: ${{ .params.ROUTE53_SUB_DOMAIN }}
+            varsFrom:
+              - kind: ConfigMap
+                name: medx-${{ .params.ENVIRONMENT }}-tf-vars
+            sourceRef:
+              kind: GitRepository
+              name: flux-system
+              namespace: flux-system
+        - apiVersion: infra.contrib.fluxcd.io/v1alpha1
+          kind: Terraform
+          metadata:
+            name: ${{ .params.CLUSTER_NAME }}-config
+            namespace: flux-system
+          spec:
+            dependsOn:
+              - name: ${{ .params.CLUSTER_NAME }}-core
+            interval: 1h
+            retryInterval: 20s
+            path: ./terraform/cluster-config
+            approvePlan: auto
+            enableInventory: true
+            destroyResourcesOnDeletion: true
+            storeReadablePlan: human
+            backendConfig:
+              customConfiguration: |
+                backend "s3" {
+                  bucket         = "medx-terraform-state"
+                  key            = "clusters/${{ .params.CLUSTER_NAME }}/cluster-config/terraform.tfstate"
+                  region         = "ca-central-1"
+                  encrypt        = true
+                  dynamodb_table = "medx-tfstate-lock"
+                  skip_region_validation = true
+                }
+            vars:
+              - name: cluster_name
+                value: ${{ .params.CLUSTER_NAME }}
+              - name: region
+                value: ${{ .params.AWS_REGION }}
+              - name: instance_type
+                value: ${{ .params.INSTANCE_TYPE }}
+              - name: desired_size
+                value: ${{ .params.DESIRED_SIZE }}
+              - name: min_size
+                value: ${{ .params.MIN_SIZE }}
+              - name: max_size
+                value: ${{ .params.MAX_SIZE }}
+              - name: flux_target_path
+                value: clusters/${{ .params.CLUSTER_NAME }}/flux
+              - name: flux_cluster_path
+                value: clusters/${{ .params.CLUSTER_NAME }}
+              - name: database_identifier
+                value: ${{ .params.CLUSTER_NAME }}-db
+              - name: create_database_from_snapshot
+                value: ${{ .params.CREATE_DATABASE_FROM_SNAPSHOT }}
+              - name: jumpbox_name
+                value: ${{ .params.CLUSTER_NAME }}-jumpbox
+              - name: database_engine_version
+                value: ${{ .params.DATABASE_VERSION }}
+              - name: database_credentials_ssm_secret
+                value: ${{ .params.DATABASE_SECRET_NAME }}
+              - name: smtp_credentials_ssm_secret
+                value: ${{ .params.SMTP_SECRET_NAME }}
+              - name: database_allocated_storage
+                value: ${{ .params.DATABASE_ALLOCATED_STORAGE }}
+            varsFrom:
+              - kind: ConfigMap
+                name: medx-${{ .params.ENVIRONMENT }}-tf-vars
+              - kind: Secret
+                name: tf-gitlab-token
+              - kind: Secret
+                name: ${{ .params.CLUSTER_NAME }}-core-outputs
+            sourceRef:
+              kind: GitRepository
+              name: flux-system
+              namespace: flux-system
+        - apiVersion: infra.contrib.fluxcd.io/v1alpha1
+          kind: Terraform
+          metadata:
+            name: ${{ .params.CLUSTER_NAME }}-auth
+            namespace: flux-system
+          spec:
+            dependsOn:
+              - name: ${{ .params.CLUSTER_NAME }}-core
+            interval: 1h
+            retryInterval: 20s
+            path: ./terraform/cluster-auth
+            approvePlan: auto
+            enableInventory: true
+            destroyResourcesOnDeletion: true
+            storeReadablePlan: human
+            backendConfig:
+              customConfiguration: |
+                backend "s3" {
+                  bucket         = "medx-terraform-state"
+                  key            = "clusters/${{ .params.CLUSTER_NAME }}/cluster-auth/terraform.tfstate"
+                  region         = "ca-central-1"
+                  encrypt        = true
+                  dynamodb_table = "medx-tfstate-lock"
+                  skip_region_validation = true
+                }
+            vars:
+              - name: cluster_name
+                value: ${{ .params.CLUSTER_NAME }}
+              - name: region
+                value: ${{ .params.AWS_REGION }}
+            varsFrom:
+              - kind: ConfigMap
+                name: medx-${{ .params.ENVIRONMENT }}-tf-vars
+            writeOutputsToSecret:
+              name: ${{ .params.CLUSTER_NAME }}-kubeconfig
+            sourceRef:
+              kind: GitRepository
+              name: flux-system
+              namespace: flux-system
