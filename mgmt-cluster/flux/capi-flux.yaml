@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 10m0s
   dependsOn:
-    - name: wge
+    - name: capi-provider-core
   path: ./mgmt-cluster/bases/capi
   prune: true
   wait: true
