@@ -24,7 +24,7 @@ spec:
       default: "eu-west-1"
     - name: KUBERNETES_VERSION
       description: EKS Kubernetes version to use
-      options: ['v1.23', 'v1.24', 'v1.25', 'v1.26', 'v1.27']
+      options: ['v1.26', 'v1.27', 'v1.28']
       default: "v1.27"
     - name: WORKER_MACHINE_COUNT
       description: Number of worker nodes to create.
@@ -71,6 +71,9 @@ spec:
           spec:
             # bastion:
             #   enabled: true
+            identityRef:
+              kind: AWSClusterStaticIdentity
+              name: capi-aws-creds
             addons:
             - conflictResolution: overwrite
               name: vpc-cni
