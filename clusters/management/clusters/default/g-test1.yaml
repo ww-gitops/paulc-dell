@@ -54,7 +54,7 @@ spec:
   additionalTags:
     creator: paul.carlton@weave.works
     customer: weaveworks-cx
-    projectGid: \"99999\"
+    projectGid: 99999
   addons:
   - conflictResolution: overwrite
     name: vpc-cni
