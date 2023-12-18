@@ -8,7 +8,7 @@ data:
   clusterType: "macbook"
   mgmtClusterName: ww-paulc-dell
   dnsSuffix: kubernetes.dell.internal
-  clusterIP: 10.101.125.28
+  clusterIP: 10.96.62.71
   scmType: github
   GitHubOrg: ww-gitops
   GitHubRepo: paulc-dell
