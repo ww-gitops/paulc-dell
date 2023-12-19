@@ -18,3 +18,23 @@ spec:
     substituteFrom:
       - kind: ConfigMap
         name: cluster-config
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: capi-aws-creds
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./mgmt-cluster/addons/capi/aws-creds
+  prune: true
+  wait: true
+  dependsOn:
+    - name: capi-provider-aws
+  sourceRef:
+    kind: GitRepository
+    name: global-config
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-config
