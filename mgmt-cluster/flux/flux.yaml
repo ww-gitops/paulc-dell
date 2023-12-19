@@ -39,7 +39,7 @@ spec:
   dependsOn:
   - name: flux-components
   interval: 10m0s
-  path: ./mgmt-cluster/addons/nginx-kind
+  path: ./mgmt-cluster/addons/nginx-k0s
   prune: true
   wait: true
   sourceRef:
@@ -224,6 +224,26 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
+  name: wge-templates
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  dependsOn:
+    - name: wge
+  path: ./mgmt-cluster/addons/wge-templates
+  prune: true
+  wait: true
+  sourceRef:
+    kind: GitRepository
+    name: global-config
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-config
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
   name: prom-graf
   namespace: flux-system
 spec:
@@ -297,28 +317,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: global-config
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-config
----
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-kind: Kustomization
-metadata:
-  name: capi-templates
-  namespace: flux-system
-spec:
-  interval: 10m0s
-  dependsOn:
-    - name: wge
-    - name: capi
-  path: ./clusters/management/capi
-  prune: true
-  wait: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
   postBuild:
     substituteFrom:
       - kind: ConfigMap
