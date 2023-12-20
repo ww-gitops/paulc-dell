@@ -107,6 +107,7 @@ metadata:
   name: g-test1-pool-0
   namespace: default
 spec:
+  amiVersion: amazon-eks-node-1.28-v20231201
   remoteAccess:
     public: true
   scaling:
