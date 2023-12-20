@@ -8,7 +8,7 @@ metadata:
   name: g-test1
   namespace: default
   annotations:
-    templates.weave.works/create-request: "{\"repository_url\":\"https://github.com/ww-gitops/paulc-dell\",\"head_branch\":\"wge-create-branch-8byxqk\",\"base_branch\":\"main\",\"title\":\"Create resource g-test1\",\"description\":\"This PR creates a aws-eks-dev instance\",\"name\":\"aws-eks-dev\",\"parameter_values\":{\"AWS_REGION\":\"eu-west-1\",\"CLUSTER_NAME\":\"g-test1\",\"KUBERNETES_VERSION\":\"v1.27\",\"WORKER_MACHINE_COUNT\":\"2\"},\"commit_message\":\"Create aws-eks-dev instance\",\"credentials\":{},\"namespace\":\"default\",\"template_kind\":\"GitOpsTemplate\"}"
+    templates.weave.works/create-request: "{\"repository_url\":\"https://github.com/ww-gitops/paulc-dell\",\"head_branch\":\"edit-g-test1-branch-fwrdhl\",\"base_branch\":\"main\",\"title\":\"Edit g-test1\",\"description\":\"This PR edits the resource g-test1\",\"name\":\"aws-eks-dev\",\"parameter_values\":{\"AWS_REGION\":\"eu-west-1\",\"CLUSTER_NAME\":\"g-test1\",\"KUBERNETES_VERSION\":\"v1.28\",\"WORKER_MACHINE_COUNT\":\"2\"},\"commit_message\":\"Edit g-test1\",\"credentials\":{},\"namespace\":\"default\",\"template_kind\":\"GitOpsTemplate\"}"
     templates.weave.works/created-files: "{\"files\":[\"clusters/management/clusters/default/g-test1.yaml\"]}"
 spec:
   capiClusterRef:
@@ -43,7 +43,7 @@ kind: AWSManagedControlPlane
 metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
-    templates.weave.works/create-request: "{\"repository_url\":\"https://github.com/ww-gitops/paulc-dell\",\"head_branch\":\"wge-create-branch-8byxqk\",\"base_branch\":\"main\",\"title\":\"Create resource g-test1\",\"description\":\"This PR creates a aws-eks-dev instance\",\"name\":\"aws-eks-dev\",\"parameter_values\":{\"AWS_REGION\":\"eu-west-1\",\"CLUSTER_NAME\":\"g-test1\",\"KUBERNETES_VERSION\":\"v1.27\",\"WORKER_MACHINE_COUNT\":\"2\"},\"commit_message\":\"Create aws-eks-dev instance\",\"credentials\":{},\"namespace\":\"default\",\"template_kind\":\"GitOpsTemplate\"}"
+    templates.weave.works/create-request: "{\"repository_url\":\"https://github.com/ww-gitops/paulc-dell\",\"head_branch\":\"edit-g-test1-branch-fwrdhl\",\"base_branch\":\"main\",\"title\":\"Edit g-test1\",\"description\":\"This PR edits the resource g-test1\",\"name\":\"aws-eks-dev\",\"parameter_values\":{\"AWS_REGION\":\"eu-west-1\",\"CLUSTER_NAME\":\"g-test1\",\"KUBERNETES_VERSION\":\"v1.28\",\"WORKER_MACHINE_COUNT\":\"2\"},\"commit_message\":\"Edit g-test1\",\"credentials\":{},\"namespace\":\"default\",\"template_kind\":\"GitOpsTemplate\"}"
     templates.weave.works/created-files: "{\"files\":[\"clusters/management/clusters/default/g-test1.yaml\"]}"
   labels:
     templates.weave.works/template-name: aws-eks-dev
@@ -54,7 +54,7 @@ spec:
   additionalTags:
     creator: paul.carlton@weave.works
     customer: weaveworks-cx
-    projectGid: '99999'
+    projectGid: 99999
   addons:
   - conflictResolution: overwrite
     name: vpc-cni
@@ -65,7 +65,7 @@ spec:
     name: capi-aws-creds
   region: eu-west-1
   sshKeyName: paulcarlton-ww
-  version: v1.27
+  version: v1.28
 
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
@@ -73,7 +73,7 @@ kind: MachinePool
 metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
-    templates.weave.works/create-request: "{\"repository_url\":\"https://github.com/ww-gitops/paulc-dell\",\"head_branch\":\"wge-create-branch-8byxqk\",\"base_branch\":\"main\",\"title\":\"Create resource g-test1\",\"description\":\"This PR creates a aws-eks-dev instance\",\"name\":\"aws-eks-dev\",\"parameter_values\":{\"AWS_REGION\":\"eu-west-1\",\"CLUSTER_NAME\":\"g-test1\",\"KUBERNETES_VERSION\":\"v1.27\",\"WORKER_MACHINE_COUNT\":\"2\"},\"commit_message\":\"Create aws-eks-dev instance\",\"credentials\":{},\"namespace\":\"default\",\"template_kind\":\"GitOpsTemplate\"}"
+    templates.weave.works/create-request: "{\"repository_url\":\"https://github.com/ww-gitops/paulc-dell\",\"head_branch\":\"edit-g-test1-branch-fwrdhl\",\"base_branch\":\"main\",\"title\":\"Edit g-test1\",\"description\":\"This PR edits the resource g-test1\",\"name\":\"aws-eks-dev\",\"parameter_values\":{\"AWS_REGION\":\"eu-west-1\",\"CLUSTER_NAME\":\"g-test1\",\"KUBERNETES_VERSION\":\"v1.28\",\"WORKER_MACHINE_COUNT\":\"2\"},\"commit_message\":\"Edit g-test1\",\"credentials\":{},\"namespace\":\"default\",\"template_kind\":\"GitOpsTemplate\"}"
     templates.weave.works/created-files: "{\"files\":[\"clusters/management/clusters/default/g-test1.yaml\"]}"
   labels:
     templates.weave.works/template-name: aws-eks-dev
@@ -92,13 +92,14 @@ spec:
         apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
         kind: AWSManagedMachinePool
         name: g-test1-pool-0
+
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: AWSManagedMachinePool
 metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
-    templates.weave.works/create-request: "{\"repository_url\":\"https://github.com/ww-gitops/paulc-dell\",\"head_branch\":\"wge-create-branch-8byxqk\",\"base_branch\":\"main\",\"title\":\"Create resource g-test1\",\"description\":\"This PR creates a aws-eks-dev instance\",\"name\":\"aws-eks-dev\",\"parameter_values\":{\"AWS_REGION\":\"eu-west-1\",\"CLUSTER_NAME\":\"g-test1\",\"KUBERNETES_VERSION\":\"v1.27\",\"WORKER_MACHINE_COUNT\":\"2\"},\"commit_message\":\"Create aws-eks-dev instance\",\"credentials\":{},\"namespace\":\"default\",\"template_kind\":\"GitOpsTemplate\"}"
+    templates.weave.works/create-request: "{\"repository_url\":\"https://github.com/ww-gitops/paulc-dell\",\"head_branch\":\"edit-g-test1-branch-fwrdhl\",\"base_branch\":\"main\",\"title\":\"Edit g-test1\",\"description\":\"This PR edits the resource g-test1\",\"name\":\"aws-eks-dev\",\"parameter_values\":{\"AWS_REGION\":\"eu-west-1\",\"CLUSTER_NAME\":\"g-test1\",\"KUBERNETES_VERSION\":\"v1.28\",\"WORKER_MACHINE_COUNT\":\"2\"},\"commit_message\":\"Edit g-test1\",\"credentials\":{},\"namespace\":\"default\",\"template_kind\":\"GitOpsTemplate\"}"
     templates.weave.works/created-files: "{\"files\":[\"clusters/management/clusters/default/g-test1.yaml\"]}"
   labels:
     templates.weave.works/template-name: aws-eks-dev
